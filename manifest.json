@@ -1,23 +1,25 @@
 {
+  "id": "magic-calc-app",
   "name": "Калькулятор",
   "short_name": "Калькулятор",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='115' fill='%231c1c1e'/%3E%3Ccircle cx='170' cy='170' r='55' fill='%23a5a5a5'/%3E%3Ccircle cx='342' cy='170' r='55' fill='%23ff9f0a'/%3E%3Ccircle cx='170' cy='342' r='55' fill='%23333333'/%3E%3Ccircle cx='342' cy='342' r='55' fill='%23ff9f0a'/%3E%3Cpath d='M322 170h40M342 150v40' stroke='%23fff' stroke-width='14' stroke-linecap='round'/%3E%3Cpath d='M322 342h40' stroke='%23fff' stroke-width='14' stroke-linecap='round'/%3E%3Ctext x='170' y='182' font-family='sans-serif' font-size='42' font-weight='bold' fill='%23000' text-anchor='middle'%3EAC%3C/text%3E%3Ctext x='170' y='355' font-family='sans-serif' font-size='48' font-weight='normal' fill='%23fff' text-anchor='middle'%3E7%3C/text%3E%3C/svg%3E",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "https://img.icons8.com/color/192/calculator--v1.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='42' fill='%231c1c1e'/%3E%3Ccircle cx='64' cy='64' r='20' fill='%23a5a5a5'/%3E%3Ccircle cx='128' cy='64' r='20' fill='%23ff9f0a'/%3E%3Ccircle cx='64' cy='128' r='20' fill='%23333333'/%3E%3Ccircle cx='128' cy='128' r='20' fill='%23ff9f0a'/%3E%3Cpath d='M120 64h16M128 56v16' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M120 128h16' stroke='%23fff' stroke-width='5' stroke-linecap='round'/%3E%3Ctext x='64' y='69' font-family='sans-serif' font-size='16' font-weight='bold' fill='%23000' text-anchor='middle'%3EAC%3C/text%3E%3Ctext x='64' y='133' font-family='sans-serif' font-size='18' font-weight='normal' fill='%23fff' text-anchor='middle'%3E7%3C/text%3E%3C/svg%3E",
-      "sizes": "192x192",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "https://img.icons8.com/color/512/calculator--v1.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
     }
   ]
 }
