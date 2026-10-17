@@ -13,9 +13,10 @@
     <link rel="manifest" href="manifest.json">
     <title>Калькулятор</title>
     
-    <!-- Идеальная векторная иконка Apple Calculator (SVG data-uri) -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='115' fill='%231c1c1e'/%3E%3Ccircle cx='170' cy='170' r='55' fill='%23a5a5a5'/%3E%3Ccircle cx='342' cy='170' r='55' fill='%23ff9f0a'/%3E%3Ccircle cx='170' cy='342' r='55' fill='%23333333'/%3E%3Ccircle cx='342' cy='342' r='55' fill='%23ff9f0a'/%3E%3Cpath d='M322 170h40M342 150v40' stroke='%23fff' stroke-width='14' stroke-linecap='round'/%3E%3Cpath d='M322 342h40' stroke='%23fff' stroke-width='14' stroke-linecap='round'/%3E%3Ctext x='170' y='182' font-family='-apple-system,system-ui,sans-serif' font-size='42' font-weight='500' fill='%23000' text-anchor='middle'%3EAC%3C/text%3E%3Ctext x='170' y='355' font-family='-apple-system,system-ui,sans-serif' font-size='48' font-weight='400' fill='%23fff' text-anchor='middle'%3E7%3C/text%3E%3C/svg%3E">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='115' fill='%231c1c1e'/%3E%3Ccircle cx='170' cy='170' r='55' fill='%23a5a5a5'/%3E%3Ccircle cx='342' cy='170' r='55' fill='%23ff9f0a'/%3E%3Ccircle cx='170' cy='342' r='55' fill='%23333333'/%3E%3Ccircle cx='342' cy='342' r='55' fill='%23ff9f0a'/%3E%3Cpath d='M322 170h40M342 150v40' stroke='%23fff' stroke-width='14' stroke-linecap='round'/%3E%3Cpath d='M322 342h40' stroke='%23fff' stroke-width='14' stroke-linecap='round'/%3E%3Ctext x='170' y='182' font-family='-apple-system,system-ui,sans-serif' font-size='42' font-weight='500' fill='%23000' text-anchor='middle'%3EAC%3C/text%3E%3Ctext x='170' y='355' font-family='-apple-system,system-ui,sans-serif' font-size='48' font-weight='400' fill='%23fff' text-anchor='middle'%3E7%3C/text%3E%3C/svg%3E">
+    <!-- Иконки для iOS и Android -->
+    <link rel="apple-touch-icon" href="https://img.icons8.com/color/192/calculator--v1.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://img.icons8.com/color/192/calculator--v1.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="https://img.icons8.com/color/512/calculator--v1.png">
 
     <style>
         :root { 
@@ -39,7 +40,7 @@
             height: 100%; 
             width: 100%; 
             background-color: var(--bg-color); 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Roboto", "Helvetica Neue", sans-serif; 
             overflow: hidden; 
             touch-action: manipulation;
         }
@@ -51,7 +52,7 @@
             padding-top: env(safe-area-inset-top, 20px);
         }
         
-        /* Скрытые зоны жестов */
+        /* Скрытые зоны жестов (абсолютно невидимы) */
         #magic-trigger { 
             position: absolute; 
             top: 0; 
@@ -163,9 +164,13 @@
     </style>
 </head>
 <body>
+    <!-- Невидимый триггер активации трюка (Левый верхний угол: 2 тапа) -->
     <div id="magic-trigger"></div>
+    
+    <!-- Невидимый триггер экстренного сброса (Правый верхний угол: 3 тапа) -->
     <div id="unlock-trigger"></div>
     
+    <!-- Зона дисплея (свайп влево/вправо стирает цифру, зажатие на 2.5 сек меняет секретное число) -->
     <div class="display-container" id="disp-cont">
         <div id="display">0</div>
     </div>
@@ -197,10 +202,14 @@
     </div>
 
     <script>
+        // Регистрация Service Worker для PWA и оффлайн-работы
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js').catch(() => {});
         }
 
+        // ==========================================
+        // НАСТРОЙКИ ЗАГАДАННОГО ЧИСЛА
+        // ==========================================
         let TARGET_NUMBER = parseFloat(localStorage.getItem('magic_force_target') || '17071755');
 
         let cur = '0', prev = null, op = null, reset = false;
@@ -213,11 +222,14 @@
         const btnAc = document.getElementById('btn-ac');
         const ops = document.querySelectorAll('.op');
 
+        // Неслышная тактильная вибро-отдача
         function haptic(ms = 8) {
-            if (navigator.vibrate) navigator.vibrate(ms);
+            if (navigator.vibrate) {
+                try { navigator.vibrate(ms); } catch (e) {}
+            }
         }
 
-        // Активация: левый угол (2 быстрых тапа)
+        // АКТИВАЦИЯ ТРЮКА: Левый угол (2 быстрых тапа)
         document.getElementById('magic-trigger').addEventListener('touchstart', (e) => {
             e.preventDefault();
             magicTaps++;
@@ -226,11 +238,11 @@
             if (magicTaps === 2) {
                 magicTaps = 0;
                 ghostOn();
-                haptic(35);
+                haptic(35); // Короткая вибрация в руку: заряжено
             }
         }, { passive: false });
 
-        // Сброс: правый угол (3 быстрых тапа)
+        // СБРОС ТРЮКА: Правый угол (3 быстрых тапа)
         document.getElementById('unlock-trigger').addEventListener('touchstart', (e) => {
             e.preventDefault();
             unlockTaps++;
@@ -240,11 +252,11 @@
                 unlockTaps = 0;
                 ghost = false;
                 seq = "";
-                haptic([20, 50, 20]);
+                haptic([20, 50, 20]); // Двойная вибрация: трюк отключен
             }
         }, { passive: false });
 
-        // Изменение секретного числа: удержание 2.5 сек на дисплее
+        // СМЕНА СЕКРЕТНОГО ЧИСЛА: Долгое удержание (2.5 сек) на дисплее
         let pressTimer = null;
         dispCont.addEventListener('touchstart', () => {
             pressTimer = setTimeout(() => {
@@ -258,7 +270,7 @@
         });
         dispCont.addEventListener('touchend', () => clearTimeout(pressTimer));
 
-        // Свайп влево/вправо для удаления цифры (как в iOS)
+        // СВАЙП ПО ЭКРАНУ ДЛЯ УДАЛЕНИЯ ЦИФРЫ (Фирменный жест iOS)
         let touchStartX = 0;
         dispCont.addEventListener('touchstart', (e) => {
             touchStartX = e.touches[0].clientX;
@@ -272,6 +284,7 @@
             }
         }, { passive: true });
 
+        // ОБРАБОТКА НАЖАТИЯ КНОПОК
         document.querySelectorAll('button').forEach(btn => {
             const handlePress = (e) => {
                 e.preventDefault();
@@ -294,6 +307,7 @@
             });
         });
 
+        // ВКЛЮЧЕНИЕ РЕЖИМА ПОДМЕНЫ
         function ghostOn() {
             let c = parseFloat(cur) || 0;
             if (prev !== null && op !== null) {
@@ -408,6 +422,11 @@
         function clearOp() {
             ops.forEach(b => b.classList.remove('operator-active'));
         }
+
+        // Поддержка PWA-установки на Android
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('Готово к установке PWA');
+        });
     </script>
 </body>
 </html>
