@@ -1,4 +1,4 @@
-const CACHE_NAME = 'magic-calc-v10';
+const CACHE_NAME = 'magic-calc-v11';
 
 self.addEventListener('install', (e) => {
     self.skipWaiting();
